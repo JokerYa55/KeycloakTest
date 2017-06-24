@@ -1,10 +1,53 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Start Page</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="jquery-1.8.3.js"></script>
+        <script>
+            var accessToken = {};
+            var currentUser = {};
+            function getToken()
+            {
+                $.post("http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/token", {client_id: "admin-cli", password: "123", username: "vasil", grant_type: "password"})
+                        .done(function (data) {
+                            console.log(data);
+                            accessToken = data.access_token;
+                            console.log('accessToken = ' + accessToken);
+                        });
+            }
+
+            function getUserInfo(token)
+            {
+                $.ajax({
+                    url: "http://192.168.1.150:8080/auth/realms/master/users",
+                    data: {username: "vasil"},
+                    type: "GET",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', "Bearer " + token);
+                    },
+                    success: function () {
+                        console.log('Success! = ' + authHeader);
+                    }
+                });
+            }
+
+        </script>    
+
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <div>
+            <form action="http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/token" method="POST">                
+                <input type="text" name="client_id" value="admin-cli"/>
+                <input type="text" name="username" value="vasil"/>
+                <input type="text" name="password" value="123"/>
+                <input type="text" name="grant_type" value="password"/>
+                <input type="submit" name="send"/>
+            </form>
+
+            <input type="button" value="Test" onclick="getToken();"/>
+            <input type="button" value="Test" onclick="getUserInfo(getToken());"/>
+        </div>
     </body>
 </html>
