@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Личный кабинет</title>
-        
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="style.css">
@@ -12,9 +12,109 @@
             var accessToken;
 
 
+            /** возвращает cookie с именем name, если есть, если нет, то undefined
+             * 
+             * @param {type} name
+             * @returns {undefined}
+             */
+            
+            function getCookie(name) {
+                var matches = document.cookie.match(new RegExp(
+                        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+                        ));
+                return matches ? decodeURIComponent(matches[1]) : undefined;
+            }
+            /*
+             * 
+             * @param {type} name название cookie
+             * @param {type} value значение cookie (строка)
+             * @param {type} options Объект с дополнительными свойствами для установки cookie:
+             * @returns {undefined} Время истечения cookie. Интерпретируется по-разному, в зависимости от типа:
+             * Число – количество секунд до истечения. Например, expires: 3600 – кука на час.
+             * Объект типа Date – дата истечения.
+             * Если expires в прошлом, то cookie будет удалено.
+             * Если expires отсутствует или 0, то cookie будет установлено как сессионное и исчезнет при закрытии браузера. 
+             
+             path
+             Путь для cookie.             
+             
+             domain
+             Домен для cookie.
+             
+             secure
+             Если true, то пересылать cookie только по защищенному соединению.
+             */
+
+            function setCookie(name, value, options) {
+                options = options || {};
+
+                var expires = options.expires;
+
+                if (typeof expires == "number" && expires) {
+                    var d = new Date();
+                    d.setTime(d.getTime() + expires * 1000);
+                    expires = options.expires = d;
+                }
+                if (expires && expires.toUTCString) {
+                    options.expires = expires.toUTCString();
+                }
+
+                value = encodeURIComponent(value);
+
+                var updatedCookie = name + "=" + value;
+
+                for (var propName in options) {
+                    updatedCookie += "; " + propName;
+                    var propValue = options[propName];
+                    if (propValue !== true) {
+                        updatedCookie += "=" + propValue;
+                    }
+                }
+
+                document.cookie = updatedCookie;
+            }
+
+            function userCloseAuth()
+            {
+                ///realms/master/protocol/openid-connect/logout
+                console.log("userNoAuth()");
+                console.log(accessToken);
+                $.ajax({
+                    url: "http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/logout",
+                    type: "GET",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', "Bearer " + accessToken.access_token);
+                    },
+                    success: function (data) {
+                        console.log("Session close");
+                        console.log(data);
+                        accessToken = new Object();
+                        console.log(accessToken);
+                        $("#helloId").html("<p>До свидания: " + userInfo.firstName + " " + userInfo.lastName + "</p>");
+                    }
+                });
+            }
+
+            function getUserInfo() {
+                ///realms/{realm-name}/protocol/openid-connect/userinfo
+                console.log("userNoAuth()");
+                console.log(accessToken);
+                $.ajax({
+                    url: "http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/userinfo",
+                    type: "GET",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', "Bearer " + accessToken.access_token);
+                    },
+                    success: function (data) {
+                        console.log("Session close");
+                        console.log(data);
+                    }
+                });
+            }
+
             function userAuth()
             {
-                var accessToken;
+                //var accessToken;
                 var username = $("#nameId").val();
                 var password = $("#passwordId").val();
                 $.post("http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/token", {client_id: "admin-cli", password: password, username: username, grant_type: "password"})
@@ -36,34 +136,61 @@
                                     console.log(userInfo);
                                     $("#idId").val(userInfo.id);
                                     $("#nameId").val(userInfo.username);
+                                    $("#helloId").html("<p>Добро пожаловать: " + userInfo.firstName + " " + userInfo.lastName + "</p>");
+                                    setCookie("userId", userInfo.id, null);
+                                    setCookie("userName", username, null);
+                                    // Загружаемм основной контент
+                                    $("#content").load("index.jsp");
                                 }
                             });
 
                         });
-
             }
 
         </script>    
 
     </head>
     <body>
-        <div id="header">шапка сайта</div>
+        <div id="header">
+            <div id="helloId">
+
+            </div>
+        </div>
         <div id="menu">
             <form action="http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/token" method="POST">                
-                <input type="hidden" name="client_id" value="admin-cli"/>
-                <input id="nameId" type="text" name="username" value="vasil"/>
-                <input id="passwordId" type="text" name="password" value="123"/>
-                <input type="hidden" name="grant_type" value="password"/>
-                 <input type="button" value="Test" onclick="userAuth();"/>
-                
+                <table>
+                    <tr>
+                        <td>
+                            Имя
+                        </td>
+                        <td>
+                            <input id="nameId" type="text" name="username" value="vasil"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Пароль
+                        </td>
+                        <td>
+                            <input id="passwordId" type="text" name="password" value="123"/> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="button" value="Вход" onclick="userAuth();"/>                
+                        </td>
+                        <td>
+                            <input type="button" value="Выход" onclick="userCloseAuth();"/>                
+                        </td>
+                    </tr>
+                </table>
                 <input id="idId" type="text" value=" ">
+
+                <input type="button" value="Информация" onclick="getUserInfo();"/> 
             </form>
-
-           
-
         </div>
         <div id="content">контент</div>
-        <div id="footer">низ сайта</div>
+
     </body>
 
 
