@@ -1,53 +1,72 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Личный кабинет</title>
+        
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="style.css">
         <script src="jquery-1.8.3.js"></script>
         <script>
-            var accessToken = {};
-            var currentUser = {};
-            function getToken()
+            var userInfo;
+            var accessToken;
+
+
+            function userAuth()
             {
-                $.post("http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/token", {client_id: "admin-cli", password: "123", username: "vasil", grant_type: "password"})
+                var accessToken;
+                var username = $("#nameId").val();
+                var password = $("#passwordId").val();
+                $.post("http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/token", {client_id: "admin-cli", password: password, username: username, grant_type: "password"})
                         .done(function (data) {
                             console.log(data);
-                            accessToken = data.access_token;
-                            console.log('accessToken = ' + accessToken);
-                        });
-            }
+                            accessToken = data;
+                            console.log(accessToken);
 
-            function getUserInfo(token)
-            {
-                $.ajax({
-                    url: "http://192.168.1.150:8080/auth/realms/master/users",
-                    data: {username: "vasil"},
-                    type: "GET",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader('Authorization', "Bearer " + token);
-                    },
-                    success: function () {
-                        console.log('Success! = ' + authHeader);
-                    }
-                });
+                            $.ajax({
+                                url: "http://192.168.1.150:8080/auth/admin/realms/master/users",
+                                data: {username: "vasil"},
+                                type: "GET",
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader('Authorization', "Bearer " + accessToken.access_token);
+                                },
+                                success: function (data) {
+                                    console.log(data);
+                                    userInfo = data[0];
+                                    console.log(userInfo);
+                                    $("#idId").val(userInfo.id);
+                                    $("#nameId").val(userInfo.username);
+                                }
+                            });
+
+                        });
+
             }
 
         </script>    
 
     </head>
     <body>
-        <div>
+        <div id="header">шапка сайта</div>
+        <div id="menu">
             <form action="http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/token" method="POST">                
-                <input type="text" name="client_id" value="admin-cli"/>
-                <input type="text" name="username" value="vasil"/>
-                <input type="text" name="password" value="123"/>
-                <input type="text" name="grant_type" value="password"/>
-                <input type="submit" name="send"/>
+                <input type="hidden" name="client_id" value="admin-cli"/>
+                <input id="nameId" type="text" name="username" value="vasil"/>
+                <input id="passwordId" type="text" name="password" value="123"/>
+                <input type="hidden" name="grant_type" value="password"/>
+                 <input type="button" value="Test" onclick="userAuth();"/>
+                
+                <input id="idId" type="text" value=" ">
             </form>
 
-            <input type="button" value="Test" onclick="getToken();"/>
-            <input type="button" value="Test" onclick="getUserInfo(getToken());"/>
+           
+
         </div>
+        <div id="content">контент</div>
+        <div id="footer">низ сайта</div>
     </body>
+
+
+
+</body>
 </html>
