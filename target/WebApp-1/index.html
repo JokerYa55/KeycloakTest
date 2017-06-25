@@ -13,6 +13,7 @@
             var accessToken;
             var realm = "videomanager";
             var clientId = "video-app";
+            var keycloak = Keycloak();
 
 
             /** возвращает cookie с именем name, если есть, если нет, то undefined
@@ -21,12 +22,12 @@
              * @returns {undefined}
              */
 
-            function getCookie(name) {
+           /* function getCookie(name) {
                 var matches = document.cookie.match(new RegExp(
                         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
                         ));
                 return matches ? decodeURIComponent(matches[1]) : undefined;
-            }
+            }*/
             /*
              * 
              * @param {type} name название cookie
@@ -48,7 +49,39 @@
              Если true, то пересылать cookie только по защищенному соединению.
              */
 
-            function setCookie(name, value, options) {
+            /**
+             * Получить данные пользователя
+             * @returns {undefined}
+             */
+          /*  function loadUserInfo() {
+                keycloak.loadUserInfo().success(function (userInfo) {
+                    output(userInfo);
+                }).error(function () {
+                    output('Failed to load user info');
+                });
+            }*/
+
+            /**
+             * Загрузить профиль
+             * @returns {undefined}
+             */
+         /*   function loadProfile() {
+                keycloak.loadUserProfile().success(function (profile) {
+                    output(profile);
+                }).error(function () {
+                    output('Failed to load profile');
+                });
+            }
+
+            function output(data) {
+                if (typeof data === 'object') {
+                    data = JSON.stringify(data, null, '  ');
+                }
+                //document.getElementById('output').innerHTML = data;
+                console.log(data);
+            }
+
+           /* function setCookie(name, value, options) {
                 options = options || {};
 
                 var expires = options.expires;
@@ -99,7 +132,7 @@
                 });
             }
 
-            function getUserInfo() {
+            /*function getUserInfo() {
                 ///realms/{realm-name}/protocol/openid-connect/userinfo
                 console.log("userNoAuth()");
                 console.log(accessToken);
@@ -123,7 +156,7 @@
                 var password = $("#passwordId").val();
                 //http://192.168.1.150:8080/auth/realms/master/account/
                 //http://192.168.1.150:8080/auth/admin/realms/master/users
-                
+
                 $.post("http://192.168.1.150:8080/auth/realms/" + realm + "/protocol/openid-connect/token", {client_id: clientId, password: password, username: username, grant_type: "password"})
                         .done(function (data) {
                             console.log("token request");
@@ -170,14 +203,16 @@
 
 
             function test() {
-                var keycloak = Keycloak();
+
                 console.log(keycloak);
                 keycloak.init({onLoad: 'login-required'}).success(function (authenticated) {
-                    alert(authenticated ? 'authenticated' : 'not authenticated');
+                    console.log(authenticated ? 'authenticated' : 'not authenticated');
+                    loadUserInfo();
                 }).error(function () {
                     alert('failed to initialize');
                 });
-            }
+
+            }*/
         </script>    
 
     </head>
@@ -221,7 +256,7 @@
                     <input type="button" value="Информация" onclick="getUserInfo();"/> 
                 </form>
             </div>
-            <button onclick="test();">Test</button>
+            <button onclick="test();">Connect</button>            
 
         </div>
         <div id="content">контент</div>
