@@ -11,6 +11,8 @@
         <script>
             var userInfo;
             var accessToken;
+            var realm = "videomanager";
+            var clientId = "video-app";
 
 
             /** возвращает cookie с именем name, если есть, если нет, то undefined
@@ -80,8 +82,9 @@
                 ///realms/master/protocol/openid-connect/logout
                 console.log("userNoAuth()");
                 console.log(accessToken);
+                //var realm = "Videomanager";
                 $.ajax({
-                    url: "http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/logout",
+                    url: "http://192.168.1.150:8080/auth/realms/" + realm + "/protocol/openid-connect/logout",
                     type: "GET",
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader('Authorization', "Bearer " + accessToken.access_token);
@@ -101,7 +104,7 @@
                 console.log("userNoAuth()");
                 console.log(accessToken);
                 $.ajax({
-                    url: "http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/userinfo",
+                    url: "http://192.168.1.150:8080/auth/realms/" + realm + "/protocol/openid-connect/userinfo",
                     type: "GET",
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader('Authorization', "Bearer " + accessToken.access_token);
@@ -121,14 +124,14 @@
                 //http://192.168.1.150:8080/auth/realms/master/account/
                 //http://192.168.1.150:8080/auth/admin/realms/master/users
                 
-                $.post("http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/token", {client_id: "webApp", password: password, username: username, grant_type: "password"})
+                $.post("http://192.168.1.150:8080/auth/realms/" + realm + "/protocol/openid-connect/token", {client_id: clientId, password: password, username: username, grant_type: "password"})
                         .done(function (data) {
                             console.log("token request");
                             console.log(data);
                             accessToken = data;
 
                             $.ajax({
-                                url: "http://192.168.1.150:8080/auth/admin/realms/master/users0",
+                                url: "http://192.168.1.150:8080/auth/video-app/realms/" + realm + "/users",
                                 data: {username: username},
                                 type: "GET",
                                 beforeSend: function (xhr) {
