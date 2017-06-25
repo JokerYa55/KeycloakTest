@@ -13,7 +13,10 @@ import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.DeclareRoles;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.HttpConstraint;
+import javax.servlet.annotation.ServletSecurity;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,9 +27,12 @@ import javax.servlet.http.HttpServletResponse;
  * @author vasil
  */
 @WebServlet(name = "mainPage", urlPatterns = {"/mainPage"})
+@DeclareRoles("testApp")
+@ServletSecurity(@HttpConstraint(rolesAllowed = {"testApp"}))
 public class mainPage extends HttpServlet {
     
-    private final userController user = new userController("vasil");
+    private userController user;
+    Logger log = Logger.getLogger(getClass().getName());
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,8 +44,10 @@ public class mainPage extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        Logger log = Logger.getLogger(getClass().getName());
+            throws ServletException, IOException {                        
+        String userName = request.getParameter("username");
+        log.log(Level.INFO, "username = {0}", userName);
+        user = new userController(userName);
         log.log(Level.INFO, "req = {0}", request.getProtocol());
         request.setAttribute("user", user.getCurrentUser());
         Enumeration<String> attr = request.getAttributeNames();

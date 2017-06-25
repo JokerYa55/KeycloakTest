@@ -17,7 +17,7 @@
              * @param {type} name
              * @returns {undefined}
              */
-            
+
             function getCookie(name) {
                 var matches = document.cookie.match(new RegExp(
                         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
@@ -117,20 +117,21 @@
                 //var accessToken;
                 var username = $("#nameId").val();
                 var password = $("#passwordId").val();
-                $.post("http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/token", {client_id: "admin-cli", password: password, username: username, grant_type: "password"})
+                $.post("http://192.168.1.150:8080/auth/realms/master/protocol/openid-connect/token", {client_id: "webApp", password: password, username: username, grant_type: "password"})
                         .done(function (data) {
+                            console.log("token request");
                             console.log(data);
                             accessToken = data;
-                            console.log(accessToken);
 
                             $.ajax({
                                 url: "http://192.168.1.150:8080/auth/admin/realms/master/users",
-                                data: {username: "vasil"},
+                                data: {username: username},
                                 type: "GET",
                                 beforeSend: function (xhr) {
                                     xhr.setRequestHeader('Authorization', "Bearer " + accessToken.access_token);
                                 },
                                 success: function (data) {
+                                    console.log("user request");
                                     console.log(data);
                                     userInfo = data[0];
                                     console.log(userInfo);
@@ -140,10 +141,23 @@
                                     setCookie("userId", userInfo.id, null);
                                     setCookie("userName", username, null);
                                     // Загружаемм основной контент
-                                    $("#content").load("http://192.168.1.150:8080/WebApp-1/mainPage");
+                                    $.ajax({
+                                        url: "http://192.168.1.150:8080/WebApp-1/mainPage?username=",
+                                        data: {username: userInfo.username},
+                                        type: "GET",
+                                        beforeSend: function (xhr) {
+                                            xhr.setRequestHeader('Authorization', "Bearer " + accessToken.access_token);
+                                        },
+                                        success: function (data) {
+                                            console.log(data);
+                                            userInfo = data[0];
+                                            console.log(userInfo);
+                                            // Загружаемм основной контент
+                                            $("#content").html(data);
+                                        }
+                                    });
                                 }
                             });
-
                         });
             }
 

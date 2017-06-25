@@ -9,6 +9,7 @@ import beans.service;
 import beans.user;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.enterprise.context.SessionScoped;
@@ -31,9 +32,10 @@ public class userController implements Serializable {
         tempService.setId(1);
         tempService.setName("Стационарный телефон");
         tempService.setPrice(new BigDecimal(250));
-        List<service> tempList = new LinkedList<>();
+        List<service> tempList = new ArrayList<>();
         tempList.add(tempService);
-
+        
+        tempService = new service();
         tempService.setId(2);
         tempService.setName("Интернет");
         tempService.setPrice(new BigDecimal(600));
