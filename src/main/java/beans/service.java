@@ -12,8 +12,9 @@ import java.math.BigDecimal;
  * @author vasil
  */
 public class service {
+
     private long id;
-    private long name;
+    private String name;
     private BigDecimal price;
 
     public long getId() {
@@ -24,14 +25,6 @@ public class service {
         this.id = id;
     }
 
-    public long getName() {
-        return name;
-    }
-
-    public void setName(long name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
         return price;
     }
@@ -39,5 +32,13 @@ public class service {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
-    
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }
