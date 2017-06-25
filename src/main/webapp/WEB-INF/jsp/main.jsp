@@ -15,7 +15,9 @@
     <body>
         <h1>Информация о пользователе ${user.name}</h1>
     <c:forEach var="service" items="${user.serviceList}">
-        Услуга - ${service.name} 
+        ${service.id}<br>
+        Услуга - ${service.name}<br>
+        
     </c:forEach>
     </body>
 </html>
