@@ -5,11 +5,8 @@
  */
 package servlet;
 
-import beans.user;
 import controllers.userController;
-import interfaces.userInterfaces;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,8 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author vasil
  */
 @WebServlet(name = "mainPage", urlPatterns = {"/mainPage"})
-@DeclareRoles("testApp")
-@ServletSecurity(@HttpConstraint(rolesAllowed = {"testApp"}))
+//@DeclareRoles("testApp")
+//@ServletSecurity(@HttpConstraint(rolesAllowed = {"testApp"}))
 public class mainPage extends HttpServlet {
     
     private userController user;

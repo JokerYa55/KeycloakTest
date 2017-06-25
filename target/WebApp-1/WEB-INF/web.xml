@@ -17,4 +17,8 @@
             30
         </session-timeout>
     </session-config>
+    <login-config>
+        <auth-method>KEYCLOAK</auth-method>
+        <realm-name>videomanager</realm-name>
+    </login-config>
 </web-app>

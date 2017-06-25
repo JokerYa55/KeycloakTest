@@ -16,9 +16,10 @@ body{
 #header{
     background: #3F92D2;
     position: fixed;
-    left: 0px;
-    right: 10px;
-    top: 10px;
+    left: 5px;
+    right: 5px;
+    top: 5px;
+    bottom: 5px;
     width:100%;
     height:100px;
 }
@@ -38,4 +39,8 @@ body{
     top: 110px;
     width:65%;
     height:80%;    
+}
+
+#idLogin {
+    background: #3F92D2;
 }
