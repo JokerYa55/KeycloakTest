@@ -24,7 +24,7 @@ and open the template in the editor.
 
 <html>
     <head>
-        <script src="/auth/js/keycloak.js"></script>
+        <script src="http://192.168.1.150:8080/auth/js/keycloak.js"></script>
         <script>
             var userData = {};
 
@@ -180,7 +180,7 @@ and open the template in the editor.
         <div>
             <button onclick="loginUser()">Login</button>
             <button onclick="logoutUser()">Logout</button>
-            <!--<button onclick="keycloak.register()">Register</button>
+            <button onclick="keycloak.register()">Register</button>
             <button onclick="refreshToken(9999)">Refresh Token</button>
             <button onclick="refreshToken(30)">Refresh Token (if <30s validity)</button>
             <button onclick="loadProfile()">Get Profile</button>
@@ -193,7 +193,7 @@ and open the template in the editor.
             <button onclick="output(keycloak.createLoginUrl())">Show Login URL</button>
             <button onclick="output(keycloak.createLogoutUrl())">Show Logout URL</button>
             <button onclick="output(keycloak.createRegisterUrl())">Show Register URL</button>
-            -->
+            
         </div>
 
         <h2>Result</h2>

@@ -22,12 +22,12 @@
              * @returns {undefined}
              */
 
-           /* function getCookie(name) {
-                var matches = document.cookie.match(new RegExp(
-                        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-                        ));
-                return matches ? decodeURIComponent(matches[1]) : undefined;
-            }*/
+            /* function getCookie(name) {
+             var matches = document.cookie.match(new RegExp(
+             "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+             ));
+             return matches ? decodeURIComponent(matches[1]) : undefined;
+             }*/
             /*
              * 
              * @param {type} name название cookie
@@ -53,19 +53,19 @@
              * Получить данные пользователя
              * @returns {undefined}
              */
-          /*  function loadUserInfo() {
-                keycloak.loadUserInfo().success(function (userInfo) {
-                    output(userInfo);
-                }).error(function () {
-                    output('Failed to load user info');
-                });
-            }*/
+            /*  function loadUserInfo() {
+             keycloak.loadUserInfo().success(function (userInfo) {
+             output(userInfo);
+             }).error(function () {
+             output('Failed to load user info');
+             });
+             }*/
 
             /**
              * Загрузить профиль
              * @returns {undefined}
              */
-         /*   function loadProfile() {
+            function loadProfile() {
                 keycloak.loadUserProfile().success(function (profile) {
                     output(profile);
                 }).error(function () {
@@ -81,7 +81,7 @@
                 console.log(data);
             }
 
-           /* function setCookie(name, value, options) {
+            function setCookie(name, value, options) {
                 options = options || {};
 
                 var expires = options.expires;
@@ -132,7 +132,7 @@
                 });
             }
 
-            /*function getUserInfo() {
+            function getUserInfo() {
                 ///realms/{realm-name}/protocol/openid-connect/userinfo
                 console.log("userNoAuth()");
                 console.log(accessToken);
@@ -164,7 +164,9 @@
                             accessToken = data;
 
                             $.ajax({
-                                url: "http://192.168.1.150:8080/auth/video-app/realms/" + realm + "/users",
+                                //"http://192.168.1.150:8080/auth/video-app/realms/" + realm + "/users"
+                                
+                                url: "http://192.168.1.150:8080/auth/realms/" + realm + "/protocol/openid-connect/userinfo",
                                 data: {username: username},
                                 type: "GET",
                                 beforeSend: function (xhr) {
@@ -173,17 +175,18 @@
                                 success: function (data) {
                                     console.log("user request");
                                     console.log(data);
-                                    userInfo = data[0];
+                                    userInfo = data;
+                                    console.log("userInfo = ");
                                     console.log(userInfo);
-                                    $("#idId").val(userInfo.id);
-                                    $("#nameId").val(userInfo.username);
-                                    $("#helloId").html("<p>Добро пожаловать: " + userInfo.firstName + " " + userInfo.lastName + "</p>");
-                                    setCookie("userId", userInfo.id, null);
+                                    $("#idId").val(userInfo.sub);
+                                    $("#nameId").val(userInfo.preferred_username);
+                                    $("#helloId").html("<p>Добро пожаловать: " + userInfo.family_name + " " + userInfo.given_name + "</p>");
+                                    setCookie("userId", userInfo.sub, null);
                                     setCookie("userName", username, null);
                                     // Загружаемм основной контент
                                     $.ajax({
-                                        url: "http://192.168.1.150:8080/WebApp-1/mainPage?username=",
-                                        data: {username: userInfo.username},
+                                        url: "http://192.168.1.150:8080/video-app/",
+                                        data: {username: userInfo.sub},
                                         type: "GET",
                                         beforeSend: function (xhr) {
                                             xhr.setRequestHeader('Authorization', "Bearer " + accessToken.access_token);
@@ -212,7 +215,7 @@
                     alert('failed to initialize');
                 });
 
-            }*/
+            }
         </script>    
 
     </head>
@@ -231,7 +234,7 @@
                                 Имя
                             </td>
                             <td>
-                                <input id="nameId" type="text" name="username" value="vasil"/>
+                                <input id="nameId" type="text" name="username" value="appuser"/>
                             </td>
                         </tr>
                         <tr>
