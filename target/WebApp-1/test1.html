@@ -25,6 +25,7 @@ and open the template in the editor.
 <html>
     <head>
         <script src="http://192.168.1.150:8080/auth/js/keycloak.js"></script>
+        <script src="jquery-1.8.3.js"></script>
         <script>
             var userData = {};
 
@@ -78,6 +79,7 @@ and open the template in the editor.
                 console.log("loginUser()");
                 keycloak.login();
                 console.log("login");
+                //loadUserInfo();
             }
 
             function loadProfile() {
@@ -89,16 +91,19 @@ and open the template in the editor.
             }
             function loadUserInfo() {
                 keycloak.loadUserInfo().success(function (userInfo) {
-                    //output(userInfo);
+                    console.log("loadUserInfo()");
                     console.log(userInfo)
                     userData = userInfo;
                     top.postMessage('refresh', '*');
+                    $("#idUserInfo").html("Добро пожаловать : " + userInfo.name);
                     return userData;
                 }).error(function () {
                     console.log('Failed to load user info');
                     top.postMessage('refresh', '*');
                 });
             }
+                        
+            
             function refreshToken(minValidity) {
                 keycloak.updateToken(minValidity).success(function (refreshed) {
                     if (refreshed) {
@@ -165,9 +170,12 @@ and open the template in the editor.
                     console.log("Yes");
                     top.postMessage('logout', '*');
                     top.postMessage('refresh', '*');
+                    loadUserInfo();
+                    
                 } else {
                     console.log("No");
                     top.postMessage('logout', '*');
+                     $("#idUserInfo").html("Пожалуйста авторизуйтесь");
                 }
                 //console.log(loadUserInfo());
             }).error(function () {
@@ -176,12 +184,14 @@ and open the template in the editor.
         </script>
     </head>
     <body>
-
+        <div id="idUserInfo">
+            
+        </div>
         <div>
             <button onclick="loginUser()">Login</button>
             <button onclick="logoutUser()">Logout</button>
             <button onclick="keycloak.register()">Register</button>
-            <button onclick="refreshToken(9999)">Refresh Token</button>
+            <!--<button onclick="refreshToken(9999)">Refresh Token</button>
             <button onclick="refreshToken(30)">Refresh Token (if <30s validity)</button>
             <button onclick="loadProfile()">Get Profile</button>
             <button onclick="loadUserInfo()">Get User Info</button>
@@ -193,7 +203,7 @@ and open the template in the editor.
             <button onclick="output(keycloak.createLoginUrl())">Show Login URL</button>
             <button onclick="output(keycloak.createLogoutUrl())">Show Logout URL</button>
             <button onclick="output(keycloak.createRegisterUrl())">Show Register URL</button>
-            
+            -->
         </div>
 
         <h2>Result</h2>
