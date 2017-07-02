@@ -19,6 +19,10 @@ and open the template in the editor.
                         $("#idContent").html("test");
                     } else if (e.data === 'refresh') {
                         $("#idContent").load("http://192.168.1.150:8080/video-app/video-list-servlet");
+                    } else {
+                        console.log("data = ");
+                        console.log(e.data.name);
+                        $("#idUserInfo").html(e.data.name);
                     }
                 }, false);
             });
@@ -28,7 +32,10 @@ and open the template in the editor.
         <input type="text" id="idInfo" value="111111"/>
         <iframe fremeborder="0" height="500px" width="500px" src="http://192.168.1.150:8080/WebApp-1/test1.html"></iframe>
         <div id="idContent">
-            TEST
+          
+        </div>
+        <div id="idUserInfo">
+            
         </div>
 
     </body>

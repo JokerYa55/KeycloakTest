@@ -92,9 +92,11 @@ and open the template in the editor.
             function loadUserInfo() {
                 keycloak.loadUserInfo().success(function (userInfo) {
                     console.log("loadUserInfo()");
-                    console.log(userInfo)
+                    console.log(userInfo);
                     userData = userInfo;
+                    top.postMessage(userData, "*");
                     top.postMessage('refresh', '*');
+
                     $("#idUserInfo").html("Добро пожаловать : " + userInfo.name);
                     return userData;
                 }).error(function () {
@@ -102,8 +104,8 @@ and open the template in the editor.
                     top.postMessage('refresh', '*');
                 });
             }
-                        
-            
+
+
             function refreshToken(minValidity) {
                 keycloak.updateToken(minValidity).success(function (refreshed) {
                     if (refreshed) {
@@ -169,13 +171,14 @@ and open the template in the editor.
                 {
                     console.log("Yes");
                     top.postMessage('logout', '*');
-                    top.postMessage('refresh', '*');
+                    top.postMessage('refresh', '*');                    
                     loadUserInfo();
                     
+
                 } else {
                     console.log("No");
                     top.postMessage('logout', '*');
-                     $("#idUserInfo").html("Пожалуйста авторизуйтесь");
+                    $("#idUserInfo").html("Пожалуйста авторизуйтесь");
                 }
                 //console.log(loadUserInfo());
             }).error(function () {
@@ -185,7 +188,7 @@ and open the template in the editor.
     </head>
     <body>
         <div id="idUserInfo">
-            
+
         </div>
         <div>
             <button onclick="loginUser()">Login</button>
